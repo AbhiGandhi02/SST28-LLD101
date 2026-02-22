@@ -6,12 +6,12 @@ public class Main {
 
         // Wire dependencies
         PricingService pricing = new PricingService();
-        TaxCalculator taxCalc = new TaxRules();
-        DiscountCalculator discountCalc = new DiscountRules();
+        TaxRules taxRules = new TaxRules();
+        DiscountRules discountRules = new DiscountRules();
         InvoiceFormatter formatter = new InvoiceFormatter();
-        InvoiceStore store = new FileStore();
+        FileStore store = new FileStore();
 
-        CafeteriaSystem sys = new CafeteriaSystem(pricing, taxCalc, discountCalc, formatter, store);
+        CafeteriaSystem sys = new CafeteriaSystem(pricing, taxRules, discountRules, formatter, store);
 
         sys.addToMenu(new MenuItem("M1", "Veg Thali", 80.00));
         sys.addToMenu(new MenuItem("C1", "Coffee", 30.00));

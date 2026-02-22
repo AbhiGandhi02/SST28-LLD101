@@ -3,18 +3,18 @@ import java.util.*;
 public class CafeteriaSystem {
     private final Map<String, MenuItem> menu = new LinkedHashMap<>();
     private final PricingService pricing;
-    private final TaxCalculator taxCalculator;
-    private final DiscountCalculator discountCalculator;
+    private final TaxRules taxRules;
+    private final DiscountRules discountRules;
     private final InvoiceFormatter formatter;
-    private final InvoiceStore store;
+    private final FileStore store;
     private int invoiceSeq = 1000;
 
-    public CafeteriaSystem(PricingService pricing, TaxCalculator taxCalculator,
-            DiscountCalculator discountCalculator, InvoiceFormatter formatter,
-            InvoiceStore store) {
+    public CafeteriaSystem(PricingService pricing, TaxRules taxRules,
+            DiscountRules discountRules, InvoiceFormatter formatter,
+            FileStore store) {
         this.pricing = pricing;
-        this.taxCalculator = taxCalculator;
-        this.discountCalculator = discountCalculator;
+        this.taxRules = taxRules;
+        this.discountRules = discountRules;
         this.formatter = formatter;
         this.store = store;
     }
@@ -27,8 +27,8 @@ public class CafeteriaSystem {
         String invId = "INV-" + (++invoiceSeq);
 
         double subtotal = pricing.calculateSubtotal(lines, menu);
-        double tax = taxCalculator.calculateTax(customerType, subtotal);
-        double discount = discountCalculator.calculateDiscount(customerType, subtotal, lines.size());
+        double tax = taxRules.calculateTax(customerType, subtotal);
+        double discount = discountRules.calculateDiscount(customerType, subtotal, lines.size());
 
         double total = subtotal + tax - discount;
 

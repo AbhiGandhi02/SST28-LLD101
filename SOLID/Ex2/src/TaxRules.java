@@ -1,5 +1,4 @@
-public class TaxRules implements TaxCalculator {
-    @Override
+public class TaxRules{
     public double calculateTax(String customerType, double subtotal) {
         // hard-coded policy (smell)
         if ("student".equalsIgnoreCase(customerType))
