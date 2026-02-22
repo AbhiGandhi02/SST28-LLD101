@@ -1,14 +1,14 @@
 import java.util.*;
 
 public class OnboardingService {
-    private final StudentRepository repo;
+    private FakeDb db;
     private final InputParser parser;
     private final StudentValidator validator;
     private final OnboardingPrinter printer;
 
-    public OnboardingService(StudentRepository repo, InputParser parser,
+    public OnboardingService(FakeDb db, InputParser parser,
             StudentValidator validator, OnboardingPrinter printer) {
-        this.repo = repo;
+        this.db = db;
         this.parser = parser;
         this.validator = validator;
         this.printer = printer;
@@ -32,13 +32,13 @@ public class OnboardingService {
         }
 
         // 3. Generate ID & create record
-        String id = IdUtil.nextStudentId(repo.count());
+        String id = IdUtil.nextStudentId(db.count());
         StudentRecord rec = new StudentRecord(id, name, email, phone, program);
 
         // 4. Persist
-        repo.save(rec);
+        db.save(rec);
 
         // 5. Print confirmation
-        printer.printSuccess(id, repo.count(), rec);
+        printer.printSuccess(id, db.count(), rec);
     }
 }
