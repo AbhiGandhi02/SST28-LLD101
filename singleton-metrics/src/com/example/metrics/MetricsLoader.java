@@ -15,14 +15,14 @@ import java.util.Properties;
  */
 public class MetricsLoader {
 
+    // STEP 4: Use getInstance() — never "new MetricsRegistry()"
     public MetricsRegistry loadFromFile(String path) throws IOException {
         Properties props = new Properties();
         try (FileInputStream fis = new FileInputStream(path)) {
             props.load(fis);
         }
 
-        // BROKEN: should not create a new instance
-        MetricsRegistry registry = new MetricsRegistry();
+        MetricsRegistry registry = MetricsRegistry.getInstance();
 
         for (String key : props.stringPropertyNames()) {
             String raw = props.getProperty(key, "0").trim();

@@ -25,21 +25,37 @@ public class MetricsRegistry implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static MetricsRegistry INSTANCE; // BROKEN: not volatile, not thread-safe
     private final Map<String, Long> counters = new HashMap<>();
 
-    // BROKEN: should be private and should prevent second construction
-    public MetricsRegistry() {
-        // intentionally empty
+    // ─── STEP 1: Private constructor + reflection guard ───
+    private MetricsRegistry() {
+        // If someone tries to create a second instance via reflection, block it
+        if (Holder.INSTANCE != null) {
+            throw new RuntimeException("Use getInstance() — reflection attack blocked!");
+        }
     }
 
-    // BROKEN: racy lazy init; two threads can create two instances
-    public static MetricsRegistry getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MetricsRegistry();
-        }
-        return INSTANCE;
+    // ─── STEP 2: Thread-safe lazy init via static holder ───
+    // The JVM guarantees this inner class is loaded only when getInstance() is
+    // first called.
+    // Class loading is thread-safe, so no synchronized/volatile needed!
+    private static class Holder {
+        private static final MetricsRegistry INSTANCE = new MetricsRegistry();
     }
+
+    public static MetricsRegistry getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    // ─── STEP 3: Serialization protection ───
+    // When Java deserializes, it creates a NEW object. readResolve() tells Java:
+    // "Don't use that new object, use the existing singleton instead."
+    @Serial
+    private Object readResolve() {
+        return getInstance();
+    }
+
+    // ─── Business methods (unchanged) ───
 
     public synchronized void setCount(String key, long value) {
         counters.put(key, value);
@@ -56,6 +72,4 @@ public class MetricsRegistry implements Serializable {
     public synchronized Map<String, Long> getAll() {
         return Collections.unmodifiableMap(new HashMap<>(counters));
     }
-
-    // TODO: implement readResolve() to preserve singleton on deserialization
 }
