@@ -1,7 +1,7 @@
 package com.example.tickets;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 
 /**
  * Service layer that creates tickets.
@@ -16,37 +16,29 @@ import java.util.List;
  */
 public class TicketService {
 
+    // STEP 3: Use Builder instead of constructor + setters
     public IncidentTicket createTicket(String id, String reporterEmail, String title) {
-        // scattered validation (incomplete on purpose)
-        if (id == null || id.trim().isEmpty()) throw new IllegalArgumentException("id required");
-        if (reporterEmail == null || !reporterEmail.contains("@")) throw new IllegalArgumentException("email invalid");
-        if (title == null || title.trim().isEmpty()) throw new IllegalArgumentException("title required");
-
-        IncidentTicket t = new IncidentTicket(id, reporterEmail, title);
-
-        // BAD: mutating after creation
-        t.setPriority("MEDIUM");
-        t.setSource("CLI");
-        t.setCustomerVisible(false);
-
-        List<String> tags = new ArrayList<>();
-        tags.add("NEW");
-        t.setTags(tags);
-
-        return t;
+        // No scattered validation here — it all lives in Builder.build()
+        return IncidentTicket.builder(id, reporterEmail, title)
+                .priority("MEDIUM")
+                .source("CLI")
+                .customerVisible(false)
+                .addTag("NEW")
+                .build();
     }
 
-    public void escalateToCritical(IncidentTicket t) {
-        // BAD: mutating ticket after it has been "created"
-        t.setPriority("CRITICAL");
-        t.getTags().add("ESCALATED"); // list leak
+    // STEP 4: Returns a NEW ticket — original stays unchanged
+    public IncidentTicket escalateToCritical(IncidentTicket t) {
+        return t.toBuilder()
+                .priority("CRITICAL")
+                .addTag("ESCALATED")
+                .build();
     }
 
-    public void assign(IncidentTicket t, String assigneeEmail) {
-        // scattered validation
-        if (assigneeEmail != null && !assigneeEmail.contains("@")) {
-            throw new IllegalArgumentException("assigneeEmail invalid");
-        }
-        t.setAssigneeEmail(assigneeEmail);
+    // STEP 4: Returns a NEW ticket — original stays unchanged
+    public IncidentTicket assign(IncidentTicket t, String assigneeEmail) {
+        return t.toBuilder()
+                .assigneeEmail(assigneeEmail)
+                .build();
     }
 }

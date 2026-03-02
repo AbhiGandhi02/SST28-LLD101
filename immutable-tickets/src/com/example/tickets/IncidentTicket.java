@@ -1,6 +1,7 @@
 package com.example.tickets;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,57 +18,174 @@ import java.util.List;
  */
 public class IncidentTicket {
 
-    private String id;
-    private String reporterEmail;
-    private String title;
+    // ─── STEP 1: All fields are private final ───
+    private final String id;
+    private final String reporterEmail;
+    private final String title;
+    private final String description;
+    private final String priority;
+    private final List<String> tags;
+    private final String assigneeEmail;
+    private final boolean customerVisible;
+    private final Integer slaMinutes;
+    private final String source;
 
-    private String description;
-    private String priority;       // LOW, MEDIUM, HIGH, CRITICAL
-    private List<String> tags;     // mutable leak
-    private String assigneeEmail;
-    private boolean customerVisible;
-    private Integer slaMinutes;    // optional
-    private String source;         // e.g. "CLI", "WEBHOOK", "EMAIL"
-
-    public IncidentTicket() {
-        this.tags = new ArrayList<>();
+    // ─── STEP 1: Only ONE constructor, and it's PRIVATE ───
+    // Only Builder can create a ticket
+    private IncidentTicket(Builder b) {
+        this.id = b.id;
+        this.reporterEmail = b.reporterEmail;
+        this.title = b.title;
+        this.description = b.description;
+        this.priority = b.priority;
+        this.tags = new ArrayList<>(b.tags); // defensive copy!
+        this.assigneeEmail = b.assigneeEmail;
+        this.customerVisible = b.customerVisible;
+        this.slaMinutes = b.slaMinutes;
+        this.source = b.source;
     }
 
-    public IncidentTicket(String id, String reporterEmail, String title) {
-        this();
-        this.id = id;
-        this.reporterEmail = reporterEmail;
-        this.title = title;
+    // ─── STEP 1: Getters only — NO setters ───
+    public String getId() {
+        return id;
     }
 
-    public IncidentTicket(String id, String reporterEmail, String title, String priority) {
-        this(id, reporterEmail, title);
-        this.priority = priority;
+    public String getReporterEmail() {
+        return reporterEmail;
     }
 
-    // Getters
-    public String getId() { return id; }
-    public String getReporterEmail() { return reporterEmail; }
-    public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public String getPriority() { return priority; }
-    public List<String> getTags() { return tags; } // BROKEN: leaks internal list
-    public String getAssigneeEmail() { return assigneeEmail; }
-    public boolean isCustomerVisible() { return customerVisible; }
-    public Integer getSlaMinutes() { return slaMinutes; }
-    public String getSource() { return source; }
+    public String getTitle() {
+        return title;
+    }
 
-    // Setters (BROKEN: should not exist after refactor)
-    public void setId(String id) { this.id = id; }
-    public void setReporterEmail(String reporterEmail) { this.reporterEmail = reporterEmail; }
-    public void setTitle(String title) { this.title = title; }
-    public void setDescription(String description) { this.description = description; }
-    public void setPriority(String priority) { this.priority = priority; }
-    public void setTags(List<String> tags) { this.tags = tags; } // BROKEN: retains external reference
-    public void setAssigneeEmail(String assigneeEmail) { this.assigneeEmail = assigneeEmail; }
-    public void setCustomerVisible(boolean customerVisible) { this.customerVisible = customerVisible; }
-    public void setSlaMinutes(Integer slaMinutes) { this.slaMinutes = slaMinutes; }
-    public void setSource(String source) { this.source = source; }
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public List<String> getTags() {
+        return Collections.unmodifiableList(tags);
+    } // safe!
+
+    public String getAssigneeEmail() {
+        return assigneeEmail;
+    }
+
+    public boolean isCustomerVisible() {
+        return customerVisible;
+    }
+
+    public Integer getSlaMinutes() {
+        return slaMinutes;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    // ─── STEP 2: Convenience to create a new ticket from an existing one ───
+    // Copies all data into a Builder so you can change one field and build a new
+    // ticket
+    public Builder toBuilder() {
+        return new Builder(id, reporterEmail, title)
+                .description(description)
+                .priority(priority)
+                .tags(tags)
+                .assigneeEmail(assigneeEmail)
+                .customerVisible(customerVisible)
+                .slaMinutes(slaMinutes)
+                .source(source);
+    }
+
+    // ─── STEP 2: Static factory — cleaner than "new Builder(...)" ───
+    public static Builder builder(String id, String reporterEmail, String title) {
+        return new Builder(id, reporterEmail, title);
+    }
+
+    // ═══════════ STEP 2: THE BUILDER ═══════════
+
+    public static class Builder {
+        // Required fields (set in constructor — can't be skipped)
+        private final String id;
+        private final String reporterEmail;
+        private final String title;
+
+        // Optional fields (have defaults)
+        private String description;
+        private String priority;
+        private List<String> tags = new ArrayList<>();
+        private String assigneeEmail;
+        private boolean customerVisible;
+        private Integer slaMinutes;
+        private String source;
+
+        public Builder(String id, String reporterEmail, String title) {
+            this.id = id;
+            this.reporterEmail = reporterEmail;
+            this.title = title;
+        }
+
+        // Each method returns "this" so you can chain: .priority("HIGH").source("CLI")
+        public Builder description(String val) {
+            this.description = val;
+            return this;
+        }
+
+        public Builder priority(String val) {
+            this.priority = val;
+            return this;
+        }
+
+        public Builder tags(List<String> val) {
+            this.tags = new ArrayList<>(val);
+            return this;
+        }
+
+        public Builder addTag(String val) {
+            this.tags.add(val);
+            return this;
+        }
+
+        public Builder assigneeEmail(String val) {
+            this.assigneeEmail = val;
+            return this;
+        }
+
+        public Builder customerVisible(boolean val) {
+            this.customerVisible = val;
+            return this;
+        }
+
+        public Builder slaMinutes(Integer val) {
+            this.slaMinutes = val;
+            return this;
+        }
+
+        public Builder source(String val) {
+            this.source = val;
+            return this;
+        }
+
+        // ─── STEP 3: ALL validation in ONE place ───
+        public IncidentTicket build() {
+            Validation.requireTicketId(id);
+            Validation.requireEmail(reporterEmail, "reporterEmail");
+            Validation.requireNonBlank(title, "title");
+            Validation.requireMaxLen(title, 80, "title");
+
+            if (priority != null)
+                Validation.requireOneOf(priority, "priority", "LOW", "MEDIUM", "HIGH", "CRITICAL");
+            if (assigneeEmail != null)
+                Validation.requireEmail(assigneeEmail, "assigneeEmail");
+
+            Validation.requireRange(slaMinutes, 5, 7200, "slaMinutes");
+
+            return new IncidentTicket(this);
+        }
+    }
 
     @Override
     public String toString() {
