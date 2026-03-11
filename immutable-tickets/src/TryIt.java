@@ -16,17 +16,17 @@ public class TryIt {
     public static void main(String[] args) {
         TicketService service = new TicketService();
 
-        // STEP 1: Create a ticket via Builder
+        // Create a ticket via Builder
         IncidentTicket t = service.createTicket("TCK-1001", "reporter@example.com", "Payment failing on checkout");
         System.out.println("Created: " + t);
 
-        // STEP 2: "Update" returns NEW tickets — original is untouched
+        // "Update" returns NEW tickets — original is untouched
         IncidentTicket assigned = service.assign(t, "agent@example.com");
         IncidentTicket escalated = service.escalateToCritical(assigned);
         System.out.println("\nAfter updates (new ticket):   " + escalated);
         System.out.println("Original unchanged: " + t);
 
-        // STEP 3: External tag mutation is BLOCKED
+        // External tag mutation is BLOCKED
         List<String> tags = escalated.getTags();
         try {
             tags.add("HACKED_FROM_OUTSIDE");

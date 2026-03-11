@@ -16,7 +16,7 @@ package com.example.tickets;
  */
 public class TicketService {
 
-    // STEP 3: Use Builder instead of constructor + setters
+    // Use Builder instead of constructor + setters
     public IncidentTicket createTicket(String id, String reporterEmail, String title) {
         // No scattered validation here — it all lives in Builder.build()
         return IncidentTicket.builder(id, reporterEmail, title)
@@ -27,7 +27,7 @@ public class TicketService {
                 .build();
     }
 
-    // STEP 4: Returns a NEW ticket — original stays unchanged
+    // Returns a NEW ticket — original stays unchanged
     public IncidentTicket escalateToCritical(IncidentTicket t) {
         return t.toBuilder()
                 .priority("CRITICAL")
@@ -35,7 +35,7 @@ public class TicketService {
                 .build();
     }
 
-    // STEP 4: Returns a NEW ticket — original stays unchanged
+    // Returns a NEW ticket — original stays unchanged
     public IncidentTicket assign(IncidentTicket t, String assigneeEmail) {
         return t.toBuilder()
                 .assigneeEmail(assigneeEmail)

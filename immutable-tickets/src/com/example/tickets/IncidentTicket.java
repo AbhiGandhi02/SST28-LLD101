@@ -1,8 +1,8 @@
 package com.example.tickets;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * INTENTION: A ticket should be an immutable record-like object.
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class IncidentTicket {
 
-    // ─── STEP 1: All fields are private final ───
+    // All fields are private final
     private final String id;
     private final String reporterEmail;
     private final String title;
@@ -30,7 +30,7 @@ public class IncidentTicket {
     private final Integer slaMinutes;
     private final String source;
 
-    // ─── STEP 1: Only ONE constructor, and it's PRIVATE ───
+    // Only ONE constructor, and it's PRIVATE
     // Only Builder can create a ticket
     private IncidentTicket(Builder b) {
         this.id = b.id;
@@ -45,7 +45,7 @@ public class IncidentTicket {
         this.source = b.source;
     }
 
-    // ─── STEP 1: Getters only — NO setters ───
+    // Getters only — NO setters
     public String getId() {
         return id;
     }
@@ -68,7 +68,7 @@ public class IncidentTicket {
 
     public List<String> getTags() {
         return Collections.unmodifiableList(tags);
-    } // safe!
+    }
 
     public String getAssigneeEmail() {
         return assigneeEmail;
@@ -86,7 +86,7 @@ public class IncidentTicket {
         return source;
     }
 
-    // ─── STEP 2: Convenience to create a new ticket from an existing one ───
+    // Convenience to create a new ticket from an existing one
     // Copies all data into a Builder so you can change one field and build a new
     // ticket
     public Builder toBuilder() {
@@ -100,12 +100,12 @@ public class IncidentTicket {
                 .source(source);
     }
 
-    // ─── STEP 2: Static factory — cleaner than "new Builder(...)" ───
+    // Static factory — cleaner than "new Builder(...)"
     public static Builder builder(String id, String reporterEmail, String title) {
         return new Builder(id, reporterEmail, title);
     }
 
-    // ═══════════ STEP 2: THE BUILDER ═══════════
+    // THE BUILDER
 
     public static class Builder {
         // Required fields (set in constructor — can't be skipped)
@@ -169,7 +169,7 @@ public class IncidentTicket {
             return this;
         }
 
-        // ─── STEP 3: ALL validation in ONE place ───
+        // ALL validation in ONE place  
         public IncidentTicket build() {
             Validation.requireTicketId(id);
             Validation.requireEmail(reporterEmail, "reporterEmail");
