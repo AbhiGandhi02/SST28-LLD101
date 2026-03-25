@@ -1,15 +1,32 @@
-public class Pen {
-    private Tip tip;
-    private Refill refill;
+package Practice_Design.Pen_Design;
 
-    public Pen(Tip tip, Refill refill) {
-        this.tip = tip;
-        this.refill = refill;
+class Pen implements WritingInstrument {
+    public WriteStrategy writeStrategy;
+    public RefillingStrategy refillingStrategy;
+    public PenMechanism penMechanism;
+    public String color;
+
+    Pen(WriteStrategy writeStrategy, RefillingStrategy refillingStrategy, PenMechanism penMechanism, String color){
+        this.writeStrategy = writeStrategy;
+        this.refillingStrategy = refillingStrategy;
+        this.penMechanism = penMechanism;
+        this.color = color;
     }
 
-    public void write() {
-        tip.writeTip();
-        refill.getInk().writeInk();
-        System.out.println("Pen is writing...");
+    @Override
+    public void write(String text){
+        writeStrategy.write(text);
+    }
+
+    public void refill(){
+        refillingStrategy.refill();
+    }
+
+    public void open(){
+        penMechanism.open();
+    }
+
+    public void close(){
+        penMechanism.close();
     }
 }

@@ -1,21 +1,39 @@
+package Practice_Design.Pen_Design;
+
 public class PenFactory {
+    public static Pen getPen(String type, String mechanismType, String color){
+        WriteStrategy write;
+        RefillingStrategy refill;
+        PenMechanism mechanism;
 
-    public static Pen createPen(String type) {
-
-        if (type.equalsIgnoreCase("BALL")) {
-            return new Pen(
-                new FineTip(),
-                new Refill(new BallInk())
-            );
+        switch(type) {
+            case "INK":
+                write = new InkWrite();
+                refill = new InkRefill();
+                break;
+            case "GEL":
+                write = new GelWrite();
+                refill = new CommonRefill();
+                break;
+            case "BALL":
+                write = new BallWrite();
+                refill = new CommonRefill();
+                break;
+            default:
+                throw new RuntimeException("Invalid type");
         }
 
-        else if (type.equalsIgnoreCase("GEL")) {
-            return new Pen(
-                new MediumTip(),
-                new Refill(new GelInk())
-            );
+        switch(mechanismType){
+            case "Click":
+                mechanism = new ClickMechanism();
+                break;
+            case "Cap":
+                mechanism = new CapMechanism();
+                break;
+            default: 
+                throw new RuntimeException("Invalid type");
         }
 
-        return null;
+        return new Pen(write, refill, mechanism, color);
     }
 }
