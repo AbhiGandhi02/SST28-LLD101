@@ -1,50 +1,29 @@
-import models.*;
-import service.GameService;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import java.util.*;
-
-public class Main {
+public class Main{
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter board size (n for n x n board): ");
-        int n = scanner.nextInt();
+        Board board = new Board(100);
 
-        System.out.print("Enter number of players: ");
-        int x = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        // Add snakes
+        board.addSnakes(99, 54);
+        board.addSnakes(70, 55);
 
-        System.out.print("Enter difficulty level (easy/hard): ");
-        String difficultyLevel = scanner.nextLine().trim();
+        // Add ladders
+        board.addLadders(3, 22);
+        board.addLadders(5, 8);
 
-        if (x < 2) {
-            System.out.println("Need at least 2 players to play!");
-            return;
-        }
+        Queue<Player> players = new LinkedList<>();
+        players.add(new Player("A"));
+        players.add(new Player("B"));
 
-        if (!difficultyLevel.equalsIgnoreCase("easy") && !difficultyLevel.equalsIgnoreCase("hard")) {
-            System.out.println("Invalid difficulty level. Choose 'easy' or 'hard'.");
-            return;
-        }
+        GameMode mode = new ContinueOnSixMode();
+        // OR
+        // GameMode mode = new ThreeSixTerminateMode();
 
-        // Create the board
-        Board board = new Board(n, difficultyLevel);
-        board.printBoard();
+        Game game = new Game(board, players, mode);
 
-        // Create players
-        List<Player> players = new ArrayList<>();
-        for (int i = 1; i <= x; i++) {
-            System.out.print("Enter name for Player " + i + ": ");
-            String name = scanner.nextLine().trim();
-            players.add(new Player(name));
-        }
-
-        System.out.println();
-
-        // Start the game
-        GameService gameService = new GameService(board, players);
-        gameService.startGame();
-
-        scanner.close();
+        game.startGame();
     }
 }
