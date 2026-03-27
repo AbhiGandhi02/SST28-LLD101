@@ -7,12 +7,12 @@ public class Main{
         Board board = new Board(100);
 
         // Add snakes
-        board.addSnakes(99, 54);
-        board.addSnakes(70, 55);
+        board.addJump(new Snake(99, 54));
+        board.addJump(new Snake(70, 55));
 
         // Add ladders
-        board.addLadders(3, 22);
-        board.addLadders(5, 8);
+        board.addJump(new Ladder(3, 22));
+        board.addJump(new Ladder(5, 8));
 
         Queue<Player> players = new LinkedList<>();
         players.add(new Player("A"));

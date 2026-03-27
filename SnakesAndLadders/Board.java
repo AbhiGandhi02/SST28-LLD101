@@ -1,22 +1,17 @@
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
     int size;
-    HashMap<Integer, Integer> snakes;
-    HashMap<Integer, Integer> ladders;
+    List<Jump> jumps;
 
     Board(int size){
         this.size = size;
-        this.snakes = new HashMap<>();
-        this.ladders = new HashMap<>();
+        this.jumps = new ArrayList<>();
     }
 
-    public void addSnakes(int head, int tail){
-        snakes.put(head, tail);
-    }
-
-    public void addLadders(int start, int end){
-        ladders.put(start, end);
+    public void addJump(Jump jump){
+        jumps.add(jump);
     }
 
     public int getSize(){
@@ -24,17 +19,12 @@ public class Board {
     }
 
     public int getFinalPosition(int position){
-        if (snakes.containsKey(position)) {
-        System.out.println("Bitten by snake! " + position + " -> " + snakes.get(position));
-        return snakes.get(position);
+        for (Jump jump : jumps) {
+            if (jump.getStart() == position) {
+                System.out.println(position + " -> " + jump.getEnd());
+                return jump.getEnd();
+            }
+        }
+        return position;
     }
-
-    if (ladders.containsKey(position)) {
-        System.out.println("Climbed ladder! " + position + " -> " + ladders.get(position));
-        return ladders.get(position);
-    }
-
-    return position;
-    }
-
 }
