@@ -1,4 +1,4 @@
-package Practice_Design.Pen_Design;
+package Pen_Design;
 
 public class BallWrite implements WriteStrategy{
     @Override

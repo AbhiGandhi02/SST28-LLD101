@@ -1,4 +1,4 @@
-package Practice_Design.Pen_Design;
+package Pen_Design;
 
 interface PenMechanism {
     void open();

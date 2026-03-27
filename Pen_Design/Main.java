@@ -1,4 +1,4 @@
-package Practice_Design.Pen_Design;
+package Pen_Design;
 
 public class Main {
     public static void main(String[] args) {

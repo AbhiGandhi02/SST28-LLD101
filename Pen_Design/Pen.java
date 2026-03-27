@@ -1,4 +1,4 @@
-package Practice_Design.Pen_Design;
+package Pen_Design;
 
 class Pen implements WritingInstrument {
     public WriteStrategy writeStrategy;

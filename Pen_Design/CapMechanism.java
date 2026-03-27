@@ -1,4 +1,4 @@
-package Practice_Design.Pen_Design;
+package Pen_Design;
 
 public class CapMechanism implements PenMechanism{
     @Override
