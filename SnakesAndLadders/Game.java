@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class Game {
@@ -5,16 +7,18 @@ public class Game {
     private Dice dice;
     private Queue<Player> players;
     private GameMode gameMode;
+    private List<Player> winners;
 
     Game(Board board, Queue<Player> players, GameMode gameMode){
         this.board = board;
         this.players = players;
         this.dice = new Dice();
         this.gameMode = gameMode;
+        this.winners = new ArrayList<>();
     }
 
     public void startGame(){
-        while (true) {
+        while (players.size() > 1) {
 
             Player player = players.poll();
 
@@ -36,13 +40,24 @@ public class Game {
 
             System.out.println(player.getName() + " moved to " + newPosition);
 
-            // Check winner
+            // Check winner — remove from game, continue
             if (newPosition == board.getSize()) {
-                System.out.println(player.getName() + " wins!");
-                break;
+                winners.add(player);
+                System.out.println(player.getName() + " finishes at rank " + winners.size() + "!");
+            } else {
+                players.offer(player);
             }
+        }
 
-            players.offer(player);
+        // Last player remaining
+        Player last = players.poll();
+        winners.add(last);
+        System.out.println("\n" + last.getName() + " is the last one remaining.");
+
+        // Print final rankings
+        System.out.println("\n=== Final Rankings ===");
+        for (int i = 0; i < winners.size(); i++) {
+            System.out.println((i + 1) + ". " + winners.get(i).getName());
         }
     }
 }

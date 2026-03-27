@@ -17,6 +17,9 @@ public class Main{
         Queue<Player> players = new LinkedList<>();
         players.add(new Player("A"));
         players.add(new Player("B"));
+        players.add(new Player("C"));
+        players.add(new Player("D"));
+        players.add(new Player("E"));
 
         GameMode mode = new ContinueOnSixMode();
         // OR
