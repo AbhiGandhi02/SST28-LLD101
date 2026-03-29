@@ -1,3 +1,5 @@
-public enum VehicleType { 
-    TWO_WHEELER, CAR, BUS 
+public enum VehicleType {
+    BIKE,
+    CAR,
+    TRUCK
 }

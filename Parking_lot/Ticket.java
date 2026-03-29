@@ -1,23 +1,41 @@
-
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public class Ticket {
-    private String ticketId;
-    private Vehicle vehicle;
-    private Slot slot;
-    private long entryTime;
+    private static int counter = 0;
 
-    public Ticket(Vehicle vehicle, Slot slot) {
-        this.ticketId = UUID.randomUUID().toString().substring(0, 8);
+    private int id;
+    private Vehicle vehicle;
+    Slot slot;
+    LocalDateTime entryTime;
+    Gate entryGate;
+
+    public Ticket(Vehicle vehicle, Slot slot, LocalDateTime entryTime, Gate entryGate){
+        this.id = ++counter;
         this.vehicle = vehicle;
         this.slot = slot;
-        this.entryTime = System.currentTimeMillis();
+        this.entryTime = entryTime;
+        this.entryGate = entryGate;
+    }
+
+    
+    public int getId() { 
+        return id; 
     }
     
-    public String getTicketId() { return ticketId; }
-    public Vehicle getVehicle() { return vehicle; }
-    public Slot getSlot() { return slot; }
-    public long getEntryTime() { return entryTime; }
+    public Vehicle getVehicle() { 
+        return vehicle; 
+    }
     
-    public void setEntryTime(long simulatedTime) { this.entryTime = simulatedTime; }
+    public Slot getSlot() { 
+        return slot; 
+    }
+    
+    public LocalDateTime getEntryTime() { 
+        return entryTime; 
+    }
+    
+    public Gate getEntryGate() { 
+        return entryGate; 
+    }
+    
 }

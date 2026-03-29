@@ -1,3 +1,5 @@
-public enum SlotType { 
-    SMALL, MEDIUM, LARGE 
+public enum SlotType {
+    SMALL,
+    MEDIUM,
+    LARGE
 }

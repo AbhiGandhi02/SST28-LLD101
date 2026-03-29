@@ -1,19 +1,25 @@
-import java.util.Map;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 
-public class HourlyPricingStrategy implements PricingStrategy {
-    private Map<SlotType, Double> hourlyRates;
+public class HourlyPricingStrategy implements PricingStrategy{
+    HashMap<SlotType, Double> map;
 
-    public HourlyPricingStrategy(Map<SlotType, Double> hourlyRates) {
-        this.hourlyRates = hourlyRates;
+    public HourlyPricingStrategy(){
+        this.map = new HashMap<>();
+        map.put(SlotType.SMALL, 10.0);
+        map.put(SlotType.MEDIUM, 20.0);
+        map.put(SlotType.LARGE, 50.0);
     }
 
+
     @Override
-    public double calculateFee(Ticket ticket, long exitTimeMillis) {
-        long durationMillis = exitTimeMillis - ticket.getEntryTime();
-        double hours = Math.ceil(durationMillis / (1000.0 * 60 * 60));
-        if (hours == 0) hours = 1; 
-        
-        double rate = hourlyRates.getOrDefault(ticket.getSlot().getType(), 10.0);
-        return hours * rate;
+    public double calculateFee(Ticket ticket, LocalDateTime exitTime){
+        long hours = Duration.between(ticket.getEntryTime(), exitTime).toHours();
+        if(hours == 0){
+            hours = 1;
+        }
+        double rate = map.get(ticket.getSlot().getSlotType());
+        return rate * hours;
     }
 }

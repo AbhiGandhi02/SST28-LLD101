@@ -1,31 +1,69 @@
-
 public class Slot {
-    private String id;
-    private SlotType type;
-    private boolean isOccupied;
+    private int id;
     private int floor;
-    private double x, y;
+    private int x;
+    private int y;
+    private SlotType slotType;
+    private boolean isAvailable;
+    private Vehicle parkedVehicle;
 
-    public Slot(String id, SlotType type, int floor, double x, double y) {
+    public Slot(int id, int floor, int x, int y, SlotType slotType){
         this.id = id;
-        this.type = type;
         this.floor = floor;
         this.x = x;
         this.y = y;
-        this.isOccupied = false;
+        this.slotType = slotType;
+        this.isAvailable = true;
+        this.parkedVehicle = null;
     }
 
-    public String getId() { return id; }
-    public SlotType getType() { return type; }
-    public boolean isOccupied() { return isOccupied; }
-    public void occupy() { this.isOccupied = true; }
-    public void free() { this.isOccupied = false; }
-    public int getFloor() { return floor; }
+    public boolean canFit(VehicleType vehicleType){
+        switch(vehicleType){
+            case BIKE:
+                return slotType == SlotType.SMALL || slotType == SlotType.MEDIUM;
+            case CAR:
+                return slotType == SlotType.MEDIUM || slotType == SlotType.LARGE;
+            case TRUCK:
+                return slotType == SlotType.LARGE;
+            default:
+                return false;
+        }
+    }
 
-    public double calculateDistanceTo(Gate gate) {
-        double dx = this.x - gate.getX();
-        double dy = this.y - gate.getY();
-        double dz = (this.floor - gate.getFloor()) * 10.0; 
+    public double distanceTo(Gate gate){
+        int dx = this.x - gate.getX();
+        int dy = this.y - gate.getY();
+        int dz = (this.floor - gate.getFloor()) * 10;
         return Math.sqrt(dx*dx + dy*dy + dz*dz);
+    }
+
+    public void parkVehicle(Vehicle vehicle){
+        this.isAvailable = false;
+        this.parkedVehicle = vehicle;
+    }
+
+    public void removeVehicle(){
+        this.isAvailable = true;
+        this.parkedVehicle = null;
+    }
+
+    public int getId() { 
+        return id; 
+    }
+
+    public int getFloor() { 
+        return floor;
+    }
+
+    public SlotType getSlotType() { 
+        return slotType; 
+    }
+
+    public boolean isAvailable() { 
+        return isAvailable; 
+    }
+
+    public Vehicle getParkedVehicle() { 
+        return parkedVehicle; 
     }
 }
