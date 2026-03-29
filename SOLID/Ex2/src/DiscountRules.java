@@ -1,4 +1,5 @@
-public class DiscountRules{
+public class DiscountRules implements DiscountCalculator {
+    @Override
     public double calculateDiscount(String customerType, double subtotal, int distinctLines) {
         // hard-coded policy (smell)
         if ("student".equalsIgnoreCase(customerType)) {
